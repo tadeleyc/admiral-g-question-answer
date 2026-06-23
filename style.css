@@ -1,0 +1,181 @@
+body {
+  margin: 0;
+  background: #061A40;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  padding-top: 40px;
+}
+
+h1 {
+  color: white;
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #C9D6EA;
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+/* TOPIC BUTTONS */
+#topics {
+  width: 85%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.topic-btn {
+  border: none;
+  padding: 25px 10px;
+  border-radius: 22px;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.topic-btn:hover {
+  transform: scale(1.04);
+}
+
+/* FLOATING MUSIC NOTES */
+.note {
+  position: absolute;
+  color: rgba(255,255,255,0.08);
+  animation: fall linear infinite;
+}
+
+.note1 {
+  left: 10%;
+  font-size: 90px;
+  animation-duration: 10s;
+}
+
+.note2 {
+  left: 35%;
+  font-size: 120px;
+  animation-duration: 13s;
+}
+
+.note3 {
+  left: 65%;
+  font-size: 100px;
+  animation-duration: 11s;
+}
+
+.note4 {
+  left: 85%;
+  font-size: 80px;
+  animation-duration: 9s;
+}
+
+@keyframes fall {
+  from {
+    top: -120px;
+  }
+
+  to {
+    top: 110vh;
+  }
+}
+
+/* QUIZ SCREEN */
+.quiz-box {
+  width: 90%;
+  max-width: 1000px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+  color: white;
+}
+
+.question-number {
+  color: white;
+  font-size: 30px;
+  margin-bottom: 25px;
+}
+
+.question {
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 50px;
+  line-height: 1.4;
+}
+
+/* 2x2 ANSWER GRID */
+#options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  width: 100%;
+}
+
+.option-btn {
+  border: none;
+  border-radius: 30px;
+  min-height: 170px;
+
+  font-size: 30px;
+  font-weight: bold;
+
+  color: white;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+/* Default Button Colors */
+.option-btn:nth-child(1) {
+  background: #FF4D6D;
+}
+
+.option-btn:nth-child(2) {
+  background: #4D96FF;
+}
+
+.option-btn:nth-child(3) {
+  background: #6BCB77;
+}
+
+.option-btn:nth-child(4) {
+  background: #FFD93D;
+  color: black;
+}
+
+.option-btn:hover {
+  transform: scale(1.04);
+}
+
+.score {
+  font-size: 24px;
+  margin-top: 35px;
+  color: #D9E3F0;
+}
+
+/* CORRECT / WRONG COLORS */
+.option-btn.correct {
+  background: #18c964 !important;
+  color: white !important;
+}
+
+.option-btn.wrong {
+  background: #ff2d55 !important;
+  color: white !important;
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+}
