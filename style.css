@@ -181,12 +181,13 @@ p {
 }
 
 .admiral-img {
-  width: 240px;
-  height: 240px;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+  border-radius: 20px;
   margin: 25px auto 35px;
   display: block;
   border: 10px solid white;
+  background: #061A40;
   box-shadow: 0 0 25px rgba(255, 255, 255, 0.45);
 }
