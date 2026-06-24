@@ -216,10 +216,16 @@ function showQuestion() {
       </h2>
 
       <h3 class="question">
-        ${question.question}
-      </h3>
+  ${question.question}
+</h3>
 
-      <div id="options"></div>
+<img
+  class="admiral-img"
+  src="admiral-g.png"
+  alt="Admiral G"
+>
+
+<div id="options"></div>
 
       <p class="score">
         Score: ${score}
