@@ -209,29 +209,35 @@ function showQuestion() {
 
   const question = currentQuiz[currentQuestion];
 
-  topicsDiv.innerHTML = `
-    <div class="quiz-box">
+topicsDiv.innerHTML = `
+  <div class="quiz-box quiz-layout">
+
+    <div class="admiral-side">
+      <img
+        class="admiral-img-large"
+        src="admiral-g.png"
+        alt="Admiral G"
+      >
+    </div>
+
+    <div class="question-side">
       <h2 class="question-number">
         ${currentTopic} — Question ${currentQuestion + 1}
       </h2>
 
       <h3 class="question">
-  ${question.question}
-</h3>
+        ${question.question}
+      </h3>
 
-<img
-  class="admiral-img"
-  src="admiral-g.png"
-  alt="Admiral G"
->
-
-<div id="options"></div>
+      <div id="options"></div>
 
       <p class="score">
         Score: ${score}
       </p>
     </div>
-  `;
+
+  </div>
+`;
 
   const optionsDiv = document.getElementById("options");
 
