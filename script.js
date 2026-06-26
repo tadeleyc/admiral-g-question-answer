@@ -34,6 +34,8 @@ let currentQuiz = [];
 let currentTopic = "";
 let recognition;
 
+const ANSWER_WAIT_TIME = 5000;
+
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -61,7 +63,7 @@ async function speak(text, callback) {
 
     audio.onended = function () {
       if (callback) {
-        setTimeout(callback, 3000);
+        setTimeout(callback, ANSWER_WAIT_TIME);
       }
     };
 
@@ -78,7 +80,7 @@ async function speak(text, callback) {
 
     speech.onend = function () {
       if (callback) {
-        setTimeout(callback, 3000);
+        setTimeout(callback, ANSWER_WAIT_TIME);
       }
     };
 
@@ -87,73 +89,47 @@ async function speak(text, callback) {
 }
 
 function startListening(question, options) {
-
   const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) return;
 
-  recognition =
-    new SpeechRecognition();
-
-    recognition.onstart = function() {
-  console.log("Listening...");
-};
-
-recognition.onerror = function(event) {
-  console.log("Speech Error:", event.error);
-};
-
-recognition.onend = function() {
-  console.log("Stopped Listening");
-};
-
+  recognition = new SpeechRecognition();
   recognition.lang = "en-US";
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-  recognition.onresult =
-    function(event) {
+  recognition.onstart = function () {
+    console.log("Listening...");
+  };
 
-      const spoken =
-        event.results[0][0]
+  recognition.onerror = function (event) {
+    console.log("Speech Error:", event.error);
+  };
+
+  recognition.onend = function () {
+    console.log("Stopped Listening");
+  };
+
+  recognition.onresult = function (event) {
+    const spoken =
+      event.results[0][0]
         .transcript
         .toLowerCase();
 
-      console.log(spoken);
+    console.log(spoken);
 
-      if (
-        spoken.includes("red")
-      ) {
-        document.querySelectorAll(
-          ".option-btn"
-        )[0].click();
-      }
-
-      else if (
-        spoken.includes("blue")
-      ) {
-        document.querySelectorAll(
-          ".option-btn"
-        )[1].click();
-      }
-
-      else if (
-        spoken.includes("green")
-      ) {
-        document.querySelectorAll(
-          ".option-btn"
-        )[2].click();
-      }
-
-      else if (
-        spoken.includes("yellow")
-      ) {
-        document.querySelectorAll(
-          ".option-btn"
-        )[3].click();
-      }
-
-    };
+    if (spoken.includes("red")) {
+      document.querySelectorAll(".option-btn")[0].click();
+    } else if (spoken.includes("blue")) {
+      document.querySelectorAll(".option-btn")[1].click();
+    } else if (spoken.includes("green")) {
+      document.querySelectorAll(".option-btn")[2].click();
+    } else if (spoken.includes("yellow")) {
+      document.querySelectorAll(".option-btn")[3].click();
+    }
+  };
 
   recognition.start();
 }
@@ -209,63 +185,40 @@ function showQuestion() {
 
   const question = currentQuiz[currentQuestion];
 
-topicsDiv.innerHTML = `
-  <div class="quiz-box quiz-layout">
+  topicsDiv.innerHTML = `
+    <div class="quiz-box quiz-layout">
 
-    <div class="admiral-side">
-      <img
-        class="admiral-img-large"
-        src="admiral-g.png"
-        alt="Admiral G"
-      >
+      <div class="admiral-side">
+        <img
+          class="admiral-img-large"
+          src="admiral-g.png"
+          alt="Admiral G"
+        >
+      </div>
+
+      <div class="question-side">
+        <h2 class="question-number">
+          ${currentTopic} — Question ${currentQuestion + 1}
+        </h2>
+
+        <h3 class="question">
+          ${question.question}
+        </h3>
+
+        <div id="options"></div>
+
+        <p class="score">
+          Score: ${score}
+        </p>
+      </div>
+
     </div>
-
-    <div class="question-side">
-      <h2 class="question-number">
-        ${currentTopic} — Question ${currentQuestion + 1}
-      </h2>
-
-      <h3 class="question">
-        ${question.question}
-      </h3>
-
-      <div id="options"></div>
-
-      <p class="score">
-        Score: ${score}
-      </p>
-    </div>
-
-  </div>
-`;
+  `;
 
   const optionsDiv = document.getElementById("options");
 
   const shuffledOptions = [...question.options];
   shuffleArray(shuffledOptions);
-
-  setTimeout(() => {
-
-speak(
-  question.question +
-  ". Red " +
-  shuffledOptions[0] +
-  ". Blue " +
-  shuffledOptions[1] +
-  ". Green " +
-  shuffledOptions[2] +
-  ". Yellow " +
-  shuffledOptions[3],
-
-  () => {
-    startListening(
-      question,
-      shuffledOptions
-    );
-  }
-);
-
-}, 500);
 
   shuffledOptions.forEach((option) => {
     const button = document.createElement("button");
@@ -273,75 +226,60 @@ speak(
     button.className = "option-btn";
     button.textContent = option;
 
-button.onclick = function () {
+    button.onclick = function () {
+      if (recognition) {
+        recognition.stop();
+      }
 
-  const allButtons =
-    document.querySelectorAll(
-      ".option-btn"
-    );
+      const allButtons = document.querySelectorAll(".option-btn");
 
-  allButtons.forEach((btn) => {
+      allButtons.forEach((btn) => {
+        btn.disabled = true;
 
-    btn.disabled = true;
+        if (btn.textContent === question.answer) {
+          btn.classList.add("correct");
+        } else {
+          btn.classList.add("wrong");
+        }
+      });
 
-    if (
-      btn.textContent ===
-      question.answer
-    ) {
+      if (option === question.answer) {
+        score++;
+        speak("Correct");
+      } else {
+        speak("Incorrect");
+      }
 
-      btn.classList.add(
-        "correct"
-      );
+      setTimeout(() => {
+        currentQuestion++;
 
-    } else {
+        if (currentQuestion < currentQuiz.length) {
+          showQuestion();
+        } else {
+          showResults();
+        }
+      }, 1500);
+    };
 
-      btn.classList.add(
-        "wrong"
-      );
-
-    }
-
+    optionsDiv.appendChild(button);
   });
-
-  if (
-    option ===
-    question.answer
-  ) {
-
-    score++;
-
-    speak("Correct");
-
-  } else {
-
-    speak("Incorrect");
-
-  }
 
   setTimeout(() => {
-
-    currentQuestion++;
-
-    if (
-      currentQuestion <
-      currentQuiz.length
-    ) {
-
-      showQuestion();
-
-    } else {
-
-      showResults();
-
-    }
-
-  }, 1500);
-
-};
-    optionsDiv.appendChild(button);
-
-  });
-
+    speak(
+      question.question +
+      ". Red " +
+      shuffledOptions[0] +
+      ". Blue " +
+      shuffledOptions[1] +
+      ". Green " +
+      shuffledOptions[2] +
+      ". Yellow " +
+      shuffledOptions[3],
+      () => {
+        startListening(question, shuffledOptions);
+      }
+    );
+  }, 500);
 }
 
 function showResults() {
